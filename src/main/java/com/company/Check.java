@@ -1,11 +1,12 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Check {
 
     private int price;
-    private static ArrayList<Food> shopList = new ArrayList<>();
+    private List<Food> shopList = new ArrayList<>();
 
     public void addFood(Food food){
         shopList.add(food);
@@ -23,11 +24,13 @@ public class Check {
         return ch;
     }
 
-    public void drawShopList(){
+    @Override
+    public String toString(){
         for (int i = 0; i < shopList.size(); i++){
             System.out.print(i+1 + ". ");
             System.out.println(shopList.get(i).getName());
         }
+        return null;
     }
 
     public int getShopListSize(){
