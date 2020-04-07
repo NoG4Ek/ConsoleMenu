@@ -1,10 +1,7 @@
-package com.company;
-
 import org.kohsuke.args4j.Option;
 
 import java.io.FileReader;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 public class Menu {
     private Map<String, List<Food>> menuMap = new HashMap<>();
@@ -12,9 +9,9 @@ public class Menu {
     @Option(name="-p",usage="Set the path to the menu\n", required = false)
     private String path;
 
-    public void assemble() throws Exception {
+    public void assemble() {
 
-        try (FileReader fr = new FileReader("Menu.txt")) {
+        try (FileReader fr = new FileReader("./Menu.txt")) {
             List<Food> list = new ArrayList<>();
             Scanner scMenu = new Scanner(fr);
             String type = "";

@@ -1,5 +1,3 @@
-package com.company;
-
 public class Food {
 
     public Food(String name, String type, int cost, String description){

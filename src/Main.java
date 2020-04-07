@@ -1,9 +1,6 @@
-package com.company;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import java.time.format.TextStyle;
 import java.util.Scanner;
 
 public class Main {
