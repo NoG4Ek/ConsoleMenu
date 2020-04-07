@@ -9,6 +9,9 @@ public class Menu {
     @Option(name="-p",usage="Set the path to the menu\n", required = false)
     private String path;
 
+    public Menu() {
+    }
+
     public void assemble() {
 
         try (FileReader fr = new FileReader("./Menu.txt")) {
