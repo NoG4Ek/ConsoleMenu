@@ -16,19 +16,24 @@ public class Check {
 
     public int price(){
         int ch = 0;
-        for (int i = 0; i < shopList.size(); i++){
-            ch += shopList.get(i).getCost();
+        for (Food product: shopList){
+            ch += product.getCost();
         }
         return ch;
     }
 
     @Override
     public String toString(){
-        for (int i = 0; i < shopList.size(); i++){
-            System.out.print(i+1 + ". ");
-            System.out.println(shopList.get(i).getName());
+        StringBuilder check = new StringBuilder();
+        int i = 1;
+        for (Food product: shopList){
+            check.append(i).append(". ");
+            check.append(product.getName());
+            if (i != shopList.size())
+                check.append(System.lineSeparator());
+            i++;
         }
-        return null;
+        return check.toString();
     }
 
     public int getShopListSize(){

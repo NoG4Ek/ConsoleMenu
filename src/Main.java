@@ -4,7 +4,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import java.util.Scanner;
 
 public class Main {
-    enum State {
+    private enum State {
         STOP,
         START_MENU,
         TYPE_MENU,
@@ -80,9 +80,9 @@ public class Main {
                     }
                     break;
                 case PRODUCT:
-                    System.out.println("~~ " + m.getFood(lastType, lastFood).getName() + " ~~" + "\nDescription:");
+                    System.out.println("~~ " + m.getFood(lastType, lastFood).getName() + " ~~" + System.lineSeparator() +"Description:");
                     m.drawDescription(lastType, lastFood);
-                    System.out.println("\n\"Buy\" - add this product to your order");
+                    System.out.println(System.lineSeparator() + "\"Buy\" - add this product to your order");
                     str = sc.nextLine();
                     switch (str){
                         case "0":
@@ -103,7 +103,7 @@ public class Main {
                     break;
                 case CHECK:
                     System.out.println("~~ Your order ~~");
-                    c.toString();
+                    System.out.println(c.toString());
                     System.out.println("~~ Total ~~");
                     System.out.println(c.price() + " rub.");
                     System.out.println("Is that all right? (\"Yes\" / \"0\"-Back / \"Food number\"-Delete from order)");

@@ -1,22 +1,19 @@
 import org.kohsuke.args4j.Option;
 
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 
 public class Menu {
     private Map<String, List<Food>> menuMap = new HashMap<>();
 
-    @Option(name="-p",usage="Set the path to the menu\n", required = false)
+    @Option(name="-p",usage="Set the path to the menu", required = false)
     private String path;
 
-    public Menu() {
-    }
-
     public void assemble() {
-
-        try (FileReader fr = new FileReader("./Menu.txt")) {
+        try (InputStream in = getClass().getResourceAsStream(path);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             List<Food> list = new ArrayList<>();
-            Scanner scMenu = new Scanner(fr);
+            Scanner scMenu = new Scanner(reader);
             String type = "";
             String name = "";
             String description = "";
@@ -29,17 +26,9 @@ public class Menu {
                     continue;
                 }
                 if (line.charAt(0) == '/' && line.charAt(1) == '/') {
-                    continue;
+                        continue;
                 } else if (line.charAt(0) == '@') {
-                    if (list.isEmpty() && !type.isEmpty()) {
-                        List clone = new ArrayList(list);
-                        menuMap.put(type, (ArrayList<Food>) clone);
-                    }
-                    if (!list.isEmpty()) {
-                        List clone = new ArrayList(list);
-                        menuMap.put(type, (ArrayList<Food>) clone);
-                        list.clear();
-                    }
+                    checkAndPut(list, type);
                     type = line.substring(1).trim();
                 } else if (line.matches("(Название:)[\\s\\S]+")) {
                     name = line.substring(9).trim();
@@ -51,22 +40,23 @@ public class Menu {
                     list.add(food);
                 }
             }
-            if (list.isEmpty() && !type.isEmpty()) {
-                List clone = new ArrayList(list);
-                menuMap.put(type, (ArrayList<Food>) clone);
-            }
-            if (!list.isEmpty()) {
-                List clone = new ArrayList(list);
-                menuMap.put(type, (ArrayList<Food>) clone);
-                list.clear();
-            }
-        } catch (Throwable e) {
-            Throwable[] suppExe = e.getSuppressed();
+            checkAndPut(list, type);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        } catch (NullPointerException e){
+            System.err.println("Файл отсутствует");
+        }
+    }
 
-            for (Throwable throwable : suppExe) {
-                System.out.println("Suppressed Exceptions:");
-                System.out.println(throwable);
-            }
+    private void checkAndPut(List<Food> list, String type) {
+        if (list.isEmpty() && !type.isEmpty()) {
+            List clone = new ArrayList(list);
+            menuMap.put(type, (ArrayList<Food>) clone);
+        }
+        if (!list.isEmpty()) {
+            List clone = new ArrayList(list);
+            menuMap.put(type, (ArrayList<Food>) clone);
+            list.clear();
         }
     }
 
@@ -75,28 +65,32 @@ public class Menu {
     public String getTypeName(int typeNumber) { return (String) menuMap.keySet().toArray()[typeNumber]; }
 
     public void drawStartMenu(){
-        for (int i = 0; i < menuMap.keySet().size(); i++){
-            System.out.print(i+1 + ". ");
-            System.out.println(menuMap.keySet().toArray()[i]);
+        int i = 1;
+        for (String typeName: menuMap.keySet()) {
+            System.out.print(i + ". ");
+            System.out.println(typeName);
+            i++;
         }
     }
 
     public void drawProducts(String type) {
-        for (int i = 0; i < menuMap.get(type).size(); i++) {
-            System.out.print(i+1 + ". ");
-            System.out.print(menuMap.get(type).get(i).getName());
-            System.out.println("    " + menuMap.get(type).get(i).getCost() + " rub.");
+        int i = 1;
+        for (Food product: menuMap.get(type)) {
+            System.out.print(i + ". ");
+            System.out.print(product.getName());
+            System.out.println("    " + product.getCost() + " rub.");
+            i++;
         }
     }
 
     public void drawDescription(int type, int food){
-        Object selectedType = menuMap.keySet().toArray()[type];
+        String selectedType = menuMap.keySet().toArray(new String[0])[type];
         System.out.println("Price: " + menuMap.get(selectedType).get(food).getCost() + " rub.");
         System.out.println(menuMap.get(selectedType).get(food).getDescription());
     }
 
     public Food getFood(int type, int food) {
-        Object selectedType = menuMap.keySet().toArray()[type];
+        String selectedType = menuMap.keySet().toArray(new String[0])[type];
         return menuMap.get(selectedType).get(food);
     }
 
