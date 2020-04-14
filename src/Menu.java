@@ -4,11 +4,16 @@ import java.io.*;
 import java.util.*;
 
 public class Menu {
+    /** Меню в формате тип - [список продуктов] */
     private Map<String, List<Food>> menuMap = new HashMap<>();
 
-    @Option(name="-p",usage="Set the path to the menu", required = false)
+    /** Путь до базы данных меню */
+    @Option(name="-p",usage="Set the path to the menu", required = true)
     private String path;
 
+    /** Функция сборки меню (чтения из файла)
+     * @see #menuMap
+     */
     public void assemble() {
         try (InputStream in = getClass().getResourceAsStream(path);
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
@@ -48,6 +53,7 @@ public class Menu {
         }
     }
 
+    // Проверка для переключения типа
     private void checkAndPut(List<Food> list, String type) {
         if (list.isEmpty() && !type.isEmpty()) {
             List clone = new ArrayList(list);
@@ -60,10 +66,22 @@ public class Menu {
         }
     }
 
+    /** Функция получения количества типов в меню
+     *
+     * @return количество типов
+     */
     public int getMapSize() { return menuMap.keySet().size(); }
 
+    /** Функция получения имени типа по его номеру
+     *
+     * @param typeNumber - номер нужного типа
+     * @return имя типа
+     */
     public String getTypeName(int typeNumber) { return (String) menuMap.keySet().toArray()[typeNumber]; }
 
+
+    /** Функция вывода списка доступных типов
+     * (Альтернатива) Отричковка начального меню */
     public void drawStartMenu(){
         int i = 1;
         for (String typeName: menuMap.keySet()) {
@@ -73,6 +91,11 @@ public class Menu {
         }
     }
 
+
+    /** Функция вывода списка продуктов по типу
+     *
+     * @param type - имя типа
+     */
     public void drawProducts(String type) {
         int i = 1;
         for (Food product: menuMap.get(type)) {
@@ -83,17 +106,32 @@ public class Menu {
         }
     }
 
+    /** Функция вывода описания блюда
+     *
+     * @param type - номер типа
+     * @param food - номер продукта
+     */
     public void drawDescription(int type, int food){
         String selectedType = menuMap.keySet().toArray(new String[0])[type];
         System.out.println("Price: " + menuMap.get(selectedType).get(food).getCost() + " rub.");
         System.out.println(menuMap.get(selectedType).get(food).getDescription());
     }
 
+    /** Функция возвращает продукт из меню по номеру типа и блюда
+     *
+     * @param type - номер типа
+     * @param food - номер продукта
+     * @return Food
+     */
     public Food getFood(int type, int food) {
         String selectedType = menuMap.keySet().toArray(new String[0])[type];
         return menuMap.get(selectedType).get(food);
     }
 
+    /** Функция возвращает количество продуктов типа
+     *
+     * @param type - имя типа
+     */
     public int getTypeSize(String type){
         return menuMap.get(type).size();
     }
